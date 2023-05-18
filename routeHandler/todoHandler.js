@@ -38,11 +38,31 @@ router.post("/all", async (req, res) => {
     })
     .catch((err) => {
       res.status(500).send({
-        error: "An error occured", err
+        error: "An error occured",
+        err,
       });
     });
 });
-router.put("/:id", async (req, res) => {});
+
+//update data
+router.put("/:id", async (req, res) => {
+  await Todo.updateOne(
+    { _id: req.params.id },
+    {
+      $set: {
+        title: "MD",
+      },
+    }
+  )
+    .then(() => {
+      res.status(201).send({
+        message: "Data Updated Succesfully",
+      });
+    })
+    .catch((err) => {
+      error: "Updation Error Occured";
+    });
+});
 router.delete("/:id", async (req, res) => {});
 
 module.exports = router;
