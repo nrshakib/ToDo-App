@@ -106,6 +106,26 @@ router.put("/:id", async (req, res) => {
       error: "Updation Error Occured";
     });
 });
-router.delete("/:id", async (req, res) => {});
+
+//delete by id
+router.delete("/:id", async (req, res) => {
+  try {
+    const deleteTodo = await Todo.findByIdAndDelete({ _id: req.params.id });
+    if (deleteTodo) {
+      res.status(200).json({
+        message: "Deleted Succesfully",
+        data: deleteTodo,
+      });
+    } else {
+      res.status(500).json({
+        message: "There was an error",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      error: error,
+    });
+  }
+});
 
 module.exports = router;
