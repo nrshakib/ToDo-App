@@ -30,7 +30,27 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {});
+//find todo by properties / id
+router.get("/:id", async (req, res) => {
+  try {
+    const todos = await Todo.find({ _id: req.params.id }).select({
+      _id: 0,
+      __v: 0,
+      date: 0,
+    });
+    if (todos) {
+      res.status(200).json(todos);
+    } else {
+      res.status(404).json({
+        message: "Todos not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "There was an error",
+    });
+  }
+});
 
 //insert single data
 router.post("/", async (req, res) => {
