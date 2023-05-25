@@ -7,7 +7,29 @@ const todoSchema = require("../routeHandler/schema/todoSchema");
 const Todo = new mongoose.model("Todo", todoSchema);
 
 //todo routes
-router.get("/", async (req, res) => {});
+router.get("/", async (req, res) => {
+  try {
+    const todos = await Todo.find()
+      .select({
+        _id: 0,
+        __v: 0,
+        date: 0,
+      })
+      .limit(3);
+    if (todos) {
+      res.status(200).json(todos);
+    } else {
+      res.status(404).json({
+        message: "Todos not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "There was an error",
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {});
 
 //insert single data
@@ -46,13 +68,14 @@ router.post("/all", async (req, res) => {
 
 //update data
 router.put("/:id", async (req, res) => {
-  await Todo.updateOne(
+  await Todo.findByIdAndUpdate(
     { _id: req.params.id },
     {
       $set: {
         title: "MD",
       },
-    }
+    },
+    { new: true }
   )
     .then(() => {
       res.status(201).send({
